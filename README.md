@@ -47,7 +47,7 @@ To run this project, ensure you have the following installed:
 
 3. **Prepare the Database Schema:**
    Create a dataschema at mySql
-   Use the provided script or annotations to set up the required schema. If using the `application-test.properties` file,
+   Use the provided script or annotations to set up the required schema. At the `application-prod.properties` file,
    configure the following:
    ```properties
    spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:
@@ -56,7 +56,7 @@ To run this project, ensure you have the following installed:
    spring.datasource.password=
    spring.jpa.hibernate.ddl-auto='Your Password of schema'
    ```
-   This configuration creates and drops the test schema automatically during application startup and shutdown.
+   Notice: Please check the comments at `application-prod.properties` file.
 
 4. **Build the Project:**
    Run the following command to download dependencies and build the project:
