@@ -15,7 +15,15 @@ public class RegionServiceImpl {
 
     private final RegionRepository regionRepository;
 
-
+/**
+ * Retrieves all regions sorted by name.
+ * <p>
+ * This method fetches all {@link Region} entities from the database and returns them as a sorted list.
+ * The regions are sorted in ascending order by their name.
+ * </p>
+ *
+ * @return a {@link List} of {@link Region} entities sorted by name.
+ */
     public List<Region> getAllRegions() {
         return regionRepository.findAll(Sort.by("name"))
                 .stream().toList();

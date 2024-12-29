@@ -45,6 +45,16 @@ public class CustomerServiceImpl implements ICustomerService {
     private final OrderItemRepository orderItemRepository;
 
 
+    /**
+     * Saves a new customer in the system.
+     *
+     * @param dto the {@link CustomerInsertDTO} containing customer data.
+     * @return a {@link CustomerReadOnlyDTO} with the saved customer's details.
+     * @throws AppServerException if a server error occurs.
+     * @throws AppObjectAlreadyExists if the customer already exists.
+     * @throws AppObjectNotFoundException if the referenced user is not found.
+     * @throws AppObjectInvalidArgumentException if input arguments are invalid.
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public CustomerReadOnlyDTO saveCustomer(CustomerInsertDTO dto)
@@ -71,6 +81,14 @@ public class CustomerServiceImpl implements ICustomerService {
 
     }
 
+    /**
+     * Updates an existing customer.
+     *
+     * @param dto the {@link CustomerUpdateDTO} with updated customer details.
+     * @return a {@link CustomerReadOnlyDTO} with the updated customer's details.
+     * @throws AppServerException if a server error occurs.
+     * @throws AppObjectNotFoundException if the customer is not found.
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public CustomerReadOnlyDTO updateCustomer(CustomerUpdateDTO dto)
@@ -85,7 +103,14 @@ public class CustomerServiceImpl implements ICustomerService {
         return mapper.mapToCustomerReadOnlyDTO(updatedCustomer);
     }
 
-
+    /**
+     * Deletes a customer by UUID.
+     *
+     * @param uuid the UUID of the customer to delete.
+     * @return a {@link CustomerReadOnlyDTO} with the deleted customer's details.
+     * @throws AppServerException if a server error occurs.
+     * @throws AppObjectNotFoundException if the customer is not found.
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public CustomerReadOnlyDTO deleteCustomer(String uuid)
@@ -106,6 +131,13 @@ public class CustomerServiceImpl implements ICustomerService {
         return new Paginated<>(filtered.map(mapper::mapToCustomerReadOnlyDTO));
     }
 
+    /**
+     * Retrieves paginated customers.
+     *
+     * @param page the page number to retrieve.
+     * @param size the number of records per page.
+     * @return a {@link Page} of {@link CustomerReadOnlyDTO}.
+     */
     @Override
     public Page<CustomerReadOnlyDTO> getPaginatedCustomers(int page, int size) {
         String defaultSort = "id";
@@ -121,11 +153,13 @@ public class CustomerServiceImpl implements ICustomerService {
         return customerRepository.findAll(pageable).map(mapper::mapToCustomerReadOnlyDTO);
     }
 
+
     @org.springframework.transaction.annotation.Transactional
     public List<CustomerReadOnlyDTO> getCustomerFiltered(CustomerFilters filters) {
         return customerRepository.findAll(getSpecsFromFilters(filters))
                 .stream().map(mapper::mapToCustomerReadOnlyDTO).toList();
     }
+
 
 
     @Override
@@ -137,6 +171,13 @@ public class CustomerServiceImpl implements ICustomerService {
         return mapper.mapToCustomerReadOnlyDTO(customer);
     }
 
+    /**
+     * Retrieves customer information by UUID.
+     *
+     * @param uuid the UUID of the customer.
+     * @return a {@link CustomerReadOnlyDTO} with the customer's details.
+     * @throws AppObjectNotFoundException if the customer is not found.
+     */
     @Override
     public CustomerReadOnlyDTO getCustomerByUuid(String uuid) throws AppObjectNotFoundException {
 
@@ -147,6 +188,22 @@ public class CustomerServiceImpl implements ICustomerService {
         return mapper.mapToCustomerReadOnlyDTO(customer);
     }
 
+    /**
+     * Saves customer information for a specific customer.
+     * <p>
+     * This method creates a new {@link CustomerInfo} record in the database using the details
+     * provided in the {@link CustomerInfoInsertDTO}. It validates that the customer exists and
+     * that there is no existing customer information associated with the given customer UUID.
+     * The operation is transactional and will roll back in case of an exception.
+     * </p>
+     *
+     * @param dto the {@link CustomerInfoInsertDTO} containing the details of the customer information to be saved.
+     * @return a {@link CustomerInfoReadOnlyDTO} containing the details of the saved customer information.
+     * @throws AppServerException if a server error occurs during the operation.
+     * @throws AppObjectAlreadyExists if customer information for the given customer UUID already exists.
+     * @throws AppObjectNotFoundException if the customer with the provided UUID is not found.
+     * @throws AppObjectInvalidArgumentException if input arguments are invalid (not used in the current logic).
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public CustomerInfoReadOnlyDTO saveCustomerInfo(CustomerInfoInsertDTO dto)
@@ -184,6 +241,21 @@ public class CustomerServiceImpl implements ICustomerService {
         }
     }
 
+    /**
+     * Updates the customer information with the provided details.
+     * <p>
+     * This method updates an existing {@link CustomerInfo} record in the database using
+     * the data provided in the {@link CustomerInfoUpdateDTO}. The operation is transactional
+     * and will roll back in case of an exception.
+     * </p>
+     *
+     * @param dto the {@link CustomerInfoUpdateDTO} containing the updated customer information.
+     * @return a {@link CustomerInfoReadOnlyDTO} containing the details of the updated customer information.
+     * @throws AppServerException if a server error occurs during the operation.
+     * @throws AppObjectAlreadyExists if there is a conflict with existing records (not used in the current logic).
+     * @throws AppObjectNotFoundException if the customer information or the specified region is not found.
+     * @throws AppObjectInvalidArgumentException if input arguments are invalid (not used in the current logic).
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public CustomerInfoReadOnlyDTO updateCustomerInfo(CustomerInfoUpdateDTO dto)
@@ -206,6 +278,19 @@ public class CustomerServiceImpl implements ICustomerService {
 
     }
 
+    /**
+     * Deletes customer information by its ID.
+     * <p>
+     * This method removes the {@link CustomerInfo} record identified by its ID from the database.
+     * It also clears the association between the customer and the customer information.
+     * The operation is transactional and will roll back in case of an exception.
+     * </p>
+     *
+     * @param id the ID of the customer information to delete.
+     * @return a {@link CustomerInfoReadOnlyDTO} containing the details of the deleted customer information.
+     * @throws AppServerException if a server error occurs during the operation.
+     * @throws AppObjectNotFoundException if the customer information or the associated customer is not found.
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public CustomerInfoReadOnlyDTO deleteCustomerInfo(Long id)
@@ -222,6 +307,19 @@ public class CustomerServiceImpl implements ICustomerService {
         return dto;
     }
 
+    /**
+     * Deletes customer information associated with a customer's UUID.
+     * <p>
+     * This method removes the {@link CustomerInfo} record linked to a customer identified by their UUID.
+     * Additionally, it removes the reference to the customer information from the customer entity.
+     * The operation is transactional and will roll back in case of an exception.
+     * </p>
+     *
+     * @param customerUuid the UUID of the customer whose information is to be deleted.
+     * @return a {@link CustomerInfoReadOnlyDTO} containing the details of the deleted customer information.
+     * @throws AppServerException if a server error occurs during the operation.
+     * @throws AppObjectNotFoundException if the customer or their information is not found.
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public CustomerInfoReadOnlyDTO deleteCustomerInfoByCustomerUuid(String customerUuid)
@@ -239,7 +337,18 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
 
-
+    /**
+     * Retrieves customer information using the customer's UUID.
+     * <p>
+     * This method fetches the {@link CustomerInfo} associated with a customer identified by their UUID.
+     * If the customer information is not found, an {@link AppObjectNotFoundException} is thrown.
+     * The found customer information is mapped to a {@link CustomerInfoReadOnlyDTO} for the response.
+     * </p>
+     *
+     * @param customerUuid the UUID of the customer whose information is to be retrieved.
+     * @return a {@link CustomerInfoReadOnlyDTO} containing the details of the customer's information.
+     * @throws AppObjectNotFoundException if the customer information with the provided UUID is not found.
+     */
     @Override
     public CustomerInfoReadOnlyDTO getCustomerInfoByCustomerUuid(String customerUuid) throws AppObjectNotFoundException {
         LOGGER.info("Entering getCustomerInfoByCustomerUuid");
@@ -250,6 +359,18 @@ public class CustomerServiceImpl implements ICustomerService {
 
     }
 
+    /**
+     * Retrieves customer information by its ID.
+     * <p>
+     * This method fetches a {@link CustomerInfo} record from the database using the provided ID.
+     * If no record is found, an {@link AppObjectNotFoundException} is thrown.
+     * The found customer information is mapped to a {@link CustomerInfoReadOnlyDTO} for the response.
+     * </p>
+     *
+     * @param id the ID of the customer information to retrieve.
+     * @return a {@link CustomerInfoReadOnlyDTO} containing the details of the customer information.
+     * @throws AppObjectNotFoundException if the customer information with the given ID is not found.
+     */
     @Override
     public CustomerInfoReadOnlyDTO getCustomerInfoById(Long id) throws AppObjectNotFoundException {
 
@@ -260,23 +381,42 @@ public class CustomerServiceImpl implements ICustomerService {
         return mapper.mapToCustomerInfoReadOnlyDTO(customerInfo);
     }
 
+    /**
+     * Retrieves payment information for a customer using their UUID.
+     * <p>
+     * This method fetches the {@link PaymentInfo} associated with a customer identified by their UUID.
+     * If the customer or the payment information is not found, an {@link AppObjectNotFoundException} is thrown.
+     * The found payment information is mapped to a {@link PaymentInfoReadOnlyDTO} for the response.
+     * </p>
+     *
+     * @param customerUuid the UUID of the customer whose payment information is to be retrieved.
+     * @return a {@link PaymentInfoReadOnlyDTO} containing the payment details for the customer.
+     * @throws AppObjectNotFoundException if the customer or the payment information is not found.
+     */
     @Override
     public PaymentInfoReadOnlyDTO getPaymentInfoByCustomerUuid(String customerUuid) throws AppObjectNotFoundException {
         if (customerRepository.findByUuid(customerUuid).isEmpty()) {
             throw new AppObjectNotFoundException("Customer", "Customer with Uuid: "
                     + customerUuid + " not found");
         }
-//        Customer customer = customerRepository.findByUuid(customerUuid).get();
-//        PaymentInfo paymentInfo = customer.getPaymentInfo();
-//        if (paymentInfo == null) {
-//            throw new AppObjectNotFoundException("PaymentInfo", "PaymentInfo not found");
-//        }
         PaymentInfo paymentInfo = paymentInfoRepository.findByCustomerUuid(customerUuid)
                 .orElseThrow(() -> new  AppObjectNotFoundException("Customer", "Customer Info for customer " +
                         "with Uuid: " + customerUuid + " not found"));
         return mapper.mapToPaymentInfoReadOnlyDTO(paymentInfo);
     }
 
+    /**
+     * Retrieves payment information by its ID.
+     * <p>
+     * This method fetches a {@link PaymentInfo} record from the database using the provided ID
+     * and maps it to a {@link PaymentInfoReadOnlyDTO} for the response. If no record is found,
+     * an {@link AppObjectNotFoundException} is thrown.
+     * </p>
+     *
+     * @param id the ID of the payment information to retrieve.
+     * @return a {@link PaymentInfoReadOnlyDTO} containing the details of the payment information.
+     * @throws AppObjectNotFoundException if the payment information with the given ID is not found.
+     */
     @Override
     public PaymentInfoReadOnlyDTO getPaymentInfoById(Long id) throws AppObjectNotFoundException {
         PaymentInfo paymentInfo = paymentInfoRepository.findById(id)
@@ -286,6 +426,16 @@ public class CustomerServiceImpl implements ICustomerService {
         return mapper.mapToPaymentInfoReadOnlyDTO(paymentInfo);
     }
 
+    /**
+     * Saves payment information for a customer.
+     *
+     * @param dto the {@link PaymentInfoInsertDTO} with payment details.
+     * @return a {@link PaymentInfoReadOnlyDTO} with the saved payment details.
+     * @throws AppServerException if a server error occurs.
+     * @throws AppObjectAlreadyExists if payment information already exists.
+     * @throws AppObjectNotFoundException if the customer is not found.
+     * @throws AppObjectInvalidArgumentException if input arguments are invalid.
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public PaymentInfoReadOnlyDTO savePaymentInfo(PaymentInfoInsertDTO dto)
@@ -306,6 +456,21 @@ public class CustomerServiceImpl implements ICustomerService {
 
     }
 
+    /**
+     * Updates the payment information record with the provided details.
+     * <p>
+     * This method updates an existing payment information record in the database using
+     * the data from the provided {@link PaymentInfoUpdateDTO}. The operation is transactional
+     * and will roll back in case of an exception.
+     * </p>
+     *
+     * @param dto the {@link PaymentInfoUpdateDTO} containing the updated payment details.
+     * @return a {@link PaymentInfoReadOnlyDTO} containing the details of the updated payment information.
+     * @throws AppServerException if a server error occurs during the operation.
+     * @throws AppObjectAlreadyExists if a conflicting payment information already exists (not used in the current logic).
+     * @throws AppObjectNotFoundException if the payment information with the provided ID is not found.
+     * @throws AppObjectInvalidArgumentException if the provided input arguments are invalid (not used in the current logic).
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public PaymentInfoReadOnlyDTO updatePaymentInfo(PaymentInfoUpdateDTO dto)
@@ -322,6 +487,20 @@ public class CustomerServiceImpl implements ICustomerService {
 
     }
 
+
+    /**
+     * Deletes a payment information record by its ID.
+     * <p>
+     * This method removes the payment information associated with the provided ID from the database.
+     * If the payment information is linked to a customer, the customer's payment information reference
+     * is also cleared. The operation is transactional and will roll back in case of an exception.
+     * </p>
+     *
+     * @param id the ID of the payment information to delete.
+     * @return a {@link PaymentInfoReadOnlyDTO} containing the details of the deleted payment information.
+     * @throws AppServerException if a server error occurs during the operation.
+     * @throws AppObjectNotFoundException if the payment information or associated customer is not found.
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public PaymentInfoReadOnlyDTO deletePaymentInfo(Long id)
@@ -339,6 +518,14 @@ public class CustomerServiceImpl implements ICustomerService {
         return dto;
     }
 
+    /**
+     * Deletes payment information by customer UUID.
+     *
+     * @param customerUuid the UUID of the customer whose payment info will be deleted.
+     * @return a {@link PaymentInfoReadOnlyDTO} with the deleted payment details.
+     * @throws AppServerException if a server error occurs.
+     * @throws AppObjectNotFoundException if the payment info is not found.
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public PaymentInfoReadOnlyDTO deletePaymentInfoByCustomerUuid(String customerUuid)
@@ -358,6 +545,17 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
 
+    /**
+     * Constructs a {@link Specification} for querying customers based on the provided filters.
+     * <p>
+     * This method builds a dynamic query specification by combining various conditions
+     * using the {@link Specification} interface. Each condition corresponds to a filter
+     * field, and all conditions are combined with logical AND.
+     * </p>
+     *
+     * @param filters the {@link CustomerFilters} object containing the filter criteria.
+     * @return a {@link Specification<Customer>} object representing the combined query conditions.
+     */
     private Specification<Customer> getSpecsFromFilters(CustomerFilters filters) {
         return Specification
                 .where(CustomerSpecification.trStringFieldLike("uuid", filters.getUuid()))

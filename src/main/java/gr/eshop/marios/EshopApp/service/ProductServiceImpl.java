@@ -44,6 +44,21 @@ public class ProductServiceImpl implements IProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
     private final AttachmentPhotoRepository attachmentPhotoRepository;
 
+/**
+ * Saves a new product with its image.
+ * <p>
+ * This method creates a new {@link Product} in the database and associates it with an image.
+ * If the SKU already exists, an {@link AppObjectAlreadyExists} exception is thrown.
+ * </p>
+ *
+ * @param dto          the {@link ProductInsertDTO} containing the product details.
+ * @param productImage the {@link MultipartFile} containing the product image.
+ * @return a {@link ProductReadOnlyDTO} representing the saved product.
+ * @throws AppServerException if a server error occurs.
+ * @throws AppObjectAlreadyExists if a product with the same SKU already exists.
+ * @throws AppObjectInvalidArgumentException if the input arguments are invalid.
+ * @throws IOException if an error occurs while saving the product image.
+ */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public ProductReadOnlyDTO saveProduct(ProductInsertDTO dto, MultipartFile productImage) throws AppServerException, AppObjectAlreadyExists, AppObjectInvalidArgumentException, IOException {
@@ -65,7 +80,18 @@ public class ProductServiceImpl implements IProductService {
         return mapper.mapToProductReadOnlyDTO(savedProduct);
     }
 
-
+/**
+ * Saves the image for a product.
+ * <p>
+ * This method handles the file storage for the product's image and creates an {@link AttachmentPhoto}
+ * entity to associate with the product.
+ * </p>
+ *
+ * @param product      the {@link Product} to associate the image with.
+ * @param photoProduct the {@link MultipartFile} containing the product image.
+ * @return the saved {@link AttachmentPhoto}.
+ * @throws IOException if an error occurs while saving the image file.
+ */
     @Transactional(rollbackOn = Exception.class)
     public AttachmentPhoto saveProductImage(Product product, MultipartFile photoProduct) throws IOException {
 
@@ -100,6 +126,20 @@ public class ProductServiceImpl implements IProductService {
         return "";
     }
 
+/**
+ * Updates an existing product with new details and/or an image.
+ * <p>
+ * This method updates the product's details in the database. If a new image is provided,
+ * it replaces the old image.
+ * </p>
+ *
+ * @param dto          the {@link ProductUpdateDTO} containing updated product details.
+ * @param productImage the {@link MultipartFile} containing the new product image (optional).
+ * @return a {@link ProductReadOnlyDTO} representing the updated product.
+ * @throws AppServerException if a server error occurs.
+ * @throws AppObjectNotFoundException if the product with the given ID or SKU is not found.
+ * @throws IOException if an error occurs while saving the product image.
+ */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public ProductReadOnlyDTO updateProduct(ProductUpdateDTO dto, MultipartFile productImage) throws AppServerException,
@@ -121,6 +161,18 @@ public class ProductServiceImpl implements IProductService {
         return mapper.mapToProductReadOnlyDTO(updatedProduct);
     }
 
+/**
+ * Deletes a product by its ID.
+ * <p>
+ * This method removes the product from the database and clears its associations
+ * with related entities such as image, brand, and category.
+ * </p>
+ *
+ * @param id the ID of the product to delete.
+ * @return a {@link ProductReadOnlyDTO} representing the deleted product.
+ * @throws AppServerException if a server error occurs.
+ * @throws AppObjectNotFoundException if the product with the given ID is not found.
+ */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public ProductReadOnlyDTO deleteProduct(Long id) throws AppServerException, AppObjectNotFoundException {
@@ -135,6 +187,15 @@ public class ProductServiceImpl implements IProductService {
         return dto;
     }
 
+/**
+ * Retrieves paginated and filtered products.
+ * <p>
+ * This method applies filters to the product query and returns a paginated list of products.
+ * </p>
+ *
+ * @param filters the {@link ProductFilters} containing the criteria for filtering.
+ * @return a {@link Paginated} object containing the filtered and paginated products as {@link ProductReadOnlyDTO}.
+ */
     @Override
     public Paginated<ProductReadOnlyDTO> getProductFilteredPaginated(ProductFilters filters) {
         var filtered = productRepository.findAll(getSpecsFromFilters(filters),filters.getPageable());
@@ -142,6 +203,16 @@ public class ProductServiceImpl implements IProductService {
         return new Paginated<>(filtered.map(mapper::mapToProductReadOnlyDTO));
     }
 
+/**
+ * Retrieves paginated products with default sorting.
+ * <p>
+ * This method returns a paginated list of products sorted by the default field ("id") in ascending order.
+ * </p>
+ *
+ * @param page the page number to retrieve.
+ * @param size the number of products per page.
+ * @return a {@link Page} of {@link ProductReadOnlyDTO}.
+ */
     @Override
     public Page<ProductReadOnlyDTO> getPaginatedProducts(int page, int size) {
         String defaultSort = "id";
@@ -152,7 +223,18 @@ public class ProductServiceImpl implements IProductService {
 
 
 
-
+/**
+ * Retrieves paginated products with custom sorting.
+ * <p>
+ * This method returns a paginated list of products sorted by the specified field and direction.
+ * </p>
+ *
+ * @param page the page number to retrieve.
+ * @param size the number of products per page.
+ * @param sortBy the field by which to sort.
+ * @param sortDirection the direction of sorting ("ASC" or "DESC").
+ * @return a {@link Page} of {@link ProductReadOnlyDTO}.
+ */
     @Override
     public Page<ProductReadOnlyDTO> getPaginatedProducts(int page, int size, String sortBy, String sortDirection) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
@@ -161,7 +243,15 @@ public class ProductServiceImpl implements IProductService {
     }
 
 
-
+/**
+ * Retrieves filtered products.
+ * <p>
+ * This method applies filters to the product query and returns a list of products.
+ * </p>
+ *
+ * @param filters the {@link ProductFilters} containing the criteria for filtering.
+ * @return a {@link List} of {@link ProductReadOnlyDTO}.
+ */
     @org.springframework.transaction.annotation.Transactional
     public List<ProductReadOnlyDTO> getProductFiltered(ProductFilters filters) {
         return productRepository.findAll(getSpecsFromFilters(filters))
@@ -171,7 +261,16 @@ public class ProductServiceImpl implements IProductService {
 
 
 
-
+/**
+ * Retrieves a product by its ID.
+ * <p>
+ * This method fetches a product using its unique identifier and maps it to a {@link ProductReadOnlyDTO}.
+ * </p>
+ *
+ * @param id the ID of the product.
+ * @return a {@link ProductReadOnlyDTO} representing the product.
+ * @throws AppObjectNotFoundException if the product with the given ID is not found.
+ */
     @Override
     public ProductReadOnlyDTO getProductById(Long id) throws AppObjectNotFoundException {
         Product product = productRepository.findById(id).
@@ -180,6 +279,15 @@ public class ProductServiceImpl implements IProductService {
         return mapper.mapToProductReadOnlyDTO(product);
     }
 
+/**
+ * Retrieves a list of all products.
+ * <p>
+ * This method fetches all products from the database and maps them to {@link ProductReadOnlyDTO}.
+ * </p>
+ *
+ * @return a {@link List} of {@link ProductReadOnlyDTO}.
+ * @throws AppObjectNotFoundException if no products are found.
+ */
     @Override
     public List<ProductReadOnlyDTO> getAllProductsList() throws AppObjectNotFoundException {
         LOGGER.info("Getting all products");
@@ -190,7 +298,16 @@ public class ProductServiceImpl implements IProductService {
     }
 
 
-
+/**
+ * Builds a dynamic query specification based on provided filters.
+ * <p>
+ * This method constructs a {@link Specification} for querying products using the criteria provided
+ * in the {@link ProductFilters}.
+ * </p>
+ *
+ * @param filters the {@link ProductFilters} containing the filtering criteria.
+ * @return a {@link Specification} for querying products.
+ */
     private Specification<Product> getSpecsFromFilters(ProductFilters filters) {
         return Specification
                 .where(ProductSpecification.trStringFieldLike("uuid", filters.getUuid()))

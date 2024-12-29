@@ -61,9 +61,20 @@ To run this project, ensure you have the following installed:
    ./gradlew bootRun
    ```
 
-5. **Access Swagger:**
-   Once the application is running, open [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) to view the Swagger API documentation.
+5. **Create Javadoc:**
+   Start the Spring Boot application:
+   ```bash
+   ./gradlew javadoc
+   ```
+   Javadoc files will created at file: "build/docs/javadoc/"
+   Open index.html file i any browser. At the moment only the services have completed javadoc explaination
 
+
+6. **Access Swagger:**
+   Once the application is running, open [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+to view the Swagger API documentation.
+    For Api Services that need authorization first add a user, customer doesn't need role and is_Active, and after 
+that take the generated token and put it at  "Authorize" at the up-right side of the screen 
 ---
 
 ## Build and Run
@@ -77,6 +88,10 @@ The JAR file will be available in the `build/libs/` directory. You can run it us
 ```bash
 java -jar build/libs/cf6-eshop-0.0.1-SNAPSHOT.jar
 ```
+Start the Spring Boot application:
+   ```bash
+   ./gradlew bootRun
+   ```
 
 
 ---

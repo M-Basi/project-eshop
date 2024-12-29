@@ -19,6 +19,16 @@ public class BrandServiceImpl {
     private final BrandRepository brandRepository;
     private final Mapper mapper;
 
+    /**
+     * Retrieves all brands sorted by their name.
+     * <p>
+     * This method fetches all brand entities from the database, sorts them
+     * by the "brandName" field, and maps them to read-only DTOs using the
+     * {@link Mapper}.
+     * </p>
+     *
+     * @return a list of {@link BrandReadOnlyDTO} representing all brands sorted by name.
+     */
     public List<BrandReadOnlyDTO> getAllBrands() {
         return brandRepository.findAll(Sort.by("brandName"))
                 .stream().map(mapper::mapBrandToReadOnlyDTO).toList();

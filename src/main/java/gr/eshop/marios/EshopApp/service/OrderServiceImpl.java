@@ -38,6 +38,21 @@ public class OrderServiceImpl implements IOrderService {
     private final Mapper mapper;
     private final ProductRepository productRepository;
 
+    /**
+     * Saves an order for a specific customer.
+     * <p>
+     * This method creates and saves a new {@link Order} for a customer identified by their UUID. It also updates
+     * the stock levels of the products included in the order.
+     * </p>
+     *
+     * @param dto the {@link OrderInsertDTO} containing the order details.
+     * @return an {@link OrderReadOnlyDTO} representing the saved order.
+     * @throws AppServerException if a server error occurs during the operation.
+     * @throws AppObjectNotFoundException if the customer or any product in the order is not found.
+     * @throws AppObjectAlreadyExists if a conflict occurs with existing data (not used in the current logic).
+     * @throws AppObjectInvalidArgumentException if the order does not contain any items or the stock levels are invalid.
+     * @throws IOException if an input/output error occurs.
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public OrderReadOnlyDTO saveOrderToCustomer(OrderInsertDTO dto)
@@ -62,6 +77,19 @@ public class OrderServiceImpl implements IOrderService {
         return mapper.mapToReadOnlyOrder(savedOrder);
     }
 
+    /**
+     * Updates the stock levels of products after a purchase.
+     * <p>
+     * This method adjusts the stock levels of products based on the quantities purchased in the order.
+     * It ensures that stock levels cannot be negative.
+     * </p>
+     *
+     * @param orderItemInsertDTOS a list of {@link OrderItemInsertDTO} containing the purchased product details.
+     * @throws AppServerException if a server error occurs during the operation.
+     * @throws AppObjectNotFoundException if any product is not found.
+     * @throws AppObjectInvalidArgumentException if the resulting stock level for any product is negative.
+     * @throws IOException if an input/output error occurs.
+     */
     @Transactional
     public void updateProductAfterPurchase (List<OrderItemInsertDTO> orderItemInsertDTOS) throws AppServerException,
             AppObjectNotFoundException ,AppObjectAlreadyExists, AppObjectInvalidArgumentException, IOException {
@@ -77,26 +105,28 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
+    /**
+     * Retrieves all orders for a specific customer.
+     * <p>
+     * This method fetches all {@link Order} records associated with a customer identified by their UUID.
+     * The orders are sorted by their creation date in ascending order.
+     * </p>
+     *
+     * @param customerUuid the UUID of the customer.
+     * @return a {@link Set} of {@link OrderReadOnlyDTO} representing the customer's orders.
+     * @throws AppServerException if a server error occurs during the operation.
+     * @throws AppObjectNotFoundException if the customer is not found.
+     */
     @Override
     public Set<OrderReadOnlyDTO> getAllOrders(String customerUuid) throws AppServerException, AppObjectNotFoundException {
         Customer customer = customerRepository.findByUuid(customerUuid)
                 .orElseThrow(() -> new AppObjectNotFoundException("Customer", "Customer with Uuid: " + customerUuid + " not found"));
         LOGGER.info("Customer  {} was found", customer);
 
-//        Set<Order> orders = customer.getOrders();
-//        Set<Order> sortedOrders = new TreeSet<>(Comparator.comparing(Order::getCreatedAt));
-//        sortedOrders.addAll(orders);
-//        return mapper.mapOrdersToReadOnlyDTO(sortedOrders);
 
         Set<Order> orders = customer.getOrders();
-
-
         List<Order> sortedOrders = new ArrayList<>(orders);
-
-
         sortedOrders.sort(Comparator.comparing(Order::getCreatedAt));
-
-
         return sortedOrders.stream()
                 .map(order -> {
                     OrderReadOnlyDTO dto = mapper.mapToReadOnlyOrder(order);
@@ -107,21 +137,24 @@ public class OrderServiceImpl implements IOrderService {
 
     }
 
-
+/**
+ * Retrieves an order by its ID.
+ * <p>
+ * This method fetches an {@link Order} record from the database using its ID and maps it to
+ * an {@link OrderReadOnlyDTO} for the response.
+ * </p>
+ *
+ * @param order_id the ID of the order to retrieve.
+ * @return an {@link OrderReadOnlyDTO} representing the order.
+ * @throws AppServerException if a server error occurs during the operation.
+ * @throws AppObjectNotFoundException if the order is not found.
+ */
     @Transactional(rollbackOn = Exception.class)
     public OrderReadOnlyDTO getOrderById(Long order_id) throws AppServerException, AppObjectNotFoundException {
-//        if (orderRepository.findById(order_id).isEmpty()) {
-//            LOGGER.error("Order with id {} not found", order_id);
-//            throw new AppObjectNotFoundException("Customer", "Customer with uuid: "
-//                    + order_id + " not found");
-//        }
+
         Order order = orderRepository.findById(order_id)
                 .orElseThrow(() -> new RuntimeException("Order with ID: " + order_id + " not found"));
         return mapper.mapToReadOnlyOrder(order);
     }
-
-
-
-
 
 }
