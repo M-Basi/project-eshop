@@ -36,17 +36,8 @@ To run this project, ensure you have the following installed:
    cd cf6-eshop
    ```
 
-2. **Configure the Database:**
-   Update the `application.properties` file in `src/main/resources/` with your database credentials:
-   ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/eshop_db
-   spring.datasource.username=your_username
-   spring.datasource.password=your_password
-   spring.jpa.hibernate.ddl-auto=update
-   ```
-
-3. **Prepare the Database Schema:**
-   Create a dataschema at mySql
+2. **Configure the Database - Prepare the Database Schema:**
+   Create a dataschema at mySql   
    Use the provided script or annotations to set up the required schema. At the `application-prod.properties` file,
    configure the following:
    ```properties
@@ -58,19 +49,19 @@ To run this project, ensure you have the following installed:
    ```
    Notice: Please check the comments at `application-prod.properties` file.
 
-4. **Build the Project:**
+3. **Build the Project:**
    Run the following command to download dependencies and build the project:
    ```bash
    ./gradlew build
    ```
 
-5. **Run the Application:**
+4. **Run the Application:**
    Start the Spring Boot application:
    ```bash
    ./gradlew bootRun
    ```
 
-6. **Access Swagger:**
+5. **Access Swagger:**
    Once the application is running, open [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) to view the Swagger API documentation.
 
 ---
