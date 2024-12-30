@@ -313,6 +313,7 @@ public class ProductServiceImpl implements IProductService {
                 .where(ProductSpecification.trStringFieldLike("uuid", filters.getUuid()))
                 .and(ProductSpecification.trStringFieldLike("id",filters.getId()))
                 .and(ProductSpecification.trStringFieldLike("sku",filters.getSku()))
+                .and(ProductSpecification.trStringFieldLike("name",filters.getName()))
                 .and(ProductSpecification.trProductByBrand(filters.getBrand()))
                 .and(ProductSpecification.trProductByCategory(filters.getCategory()))
                 .and(ProductSpecification.trProductIsActive(filters.getIsActive()))
