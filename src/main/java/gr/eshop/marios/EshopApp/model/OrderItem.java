@@ -54,7 +54,7 @@ public class OrderItem extends AbstractEntity {
 
 
     public Double totalItemOrderPrice() {
-        return (double) Math.round(this.unitPrice * this.quantity);
+        return (double) Math.round(this.unitPrice * this.quantity *100) /100;
     }
 
 
