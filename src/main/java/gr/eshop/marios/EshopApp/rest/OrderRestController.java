@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -79,7 +80,7 @@ public class OrderRestController {
             }
     )
     @PostMapping("/all")
-    public ResponseEntity<Set<OrderReadOnlyDTO>> getOrders(
+    public ResponseEntity<List<OrderReadOnlyDTO>> getOrders(
             @Valid @RequestBody UuidRequestDTO dto,
             BindingResult bindingResult) throws AppObjectInvalidArgumentException, AppObjectNotFoundException, ValidationException,
             AppObjectAlreadyExists, AppServerException {
@@ -89,7 +90,7 @@ public class OrderRestController {
 
         String uuid = dto.getUuid();
 
-        Set<OrderReadOnlyDTO> orderReadOnlyDTO = orderService.getAllOrders(uuid);
+        List<OrderReadOnlyDTO> orderReadOnlyDTO = orderService.getAllOrders(uuid);
 
         return new ResponseEntity<>(orderReadOnlyDTO, HttpStatus.OK);
     }

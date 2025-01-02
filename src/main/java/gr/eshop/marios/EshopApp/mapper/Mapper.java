@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -189,7 +191,10 @@ public class Mapper {
                 customer.getPaymentInfo() != null ? mapToPaymentInfoReadOnlyDTO(customer.getPaymentInfo()) : null
         );
 
-        customerReadOnlyDTO.setOrdersReadOnlyDTOs(mapOrdersToReadOnlyDTO(customer.getAllOrders()));
+        Set<OrderReadOnlyDTO> orders = mapOrdersToReadOnlyDTO(customer.getOrders());
+        List<OrderReadOnlyDTO> ordersReadOnlyDTOs= new ArrayList<>(orders);
+        ordersReadOnlyDTOs.sort(Comparator.comparing(OrderReadOnlyDTO::getId).reversed());
+        customerReadOnlyDTO.setOrdersReadOnlyDTOs(ordersReadOnlyDTOs);
         return customerReadOnlyDTO;
     }
 

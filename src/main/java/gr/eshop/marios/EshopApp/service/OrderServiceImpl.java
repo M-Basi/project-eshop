@@ -4,6 +4,7 @@ import gr.eshop.marios.EshopApp.core.exceptions.AppObjectAlreadyExists;
 import gr.eshop.marios.EshopApp.core.exceptions.AppObjectInvalidArgumentException;
 import gr.eshop.marios.EshopApp.core.exceptions.AppObjectNotFoundException;
 import gr.eshop.marios.EshopApp.core.exceptions.AppServerException;
+import gr.eshop.marios.EshopApp.dto.CustomerReadOnlyDTO;
 import gr.eshop.marios.EshopApp.dto.OrderInsertDTO;
 import gr.eshop.marios.EshopApp.dto.OrderItemInsertDTO;
 import gr.eshop.marios.EshopApp.dto.OrderReadOnlyDTO;
@@ -106,35 +107,23 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     /**
-     * Retrieves all orders for a specific customer.
-     * <p>
-     * This method fetches all {@link Order} records associated with a customer identified by their UUID.
-     * The orders are sorted by their creation date in ascending order.
-     * </p>
+     * Retrieves all orders associated with a specific customer by their UUID.
      *
-     * @param customerUuid the UUID of the customer.
-     * @return a {@link Set} of {@link OrderReadOnlyDTO} representing the customer's orders.
-     * @throws AppServerException if a server error occurs during the operation.
-     * @throws AppObjectNotFoundException if the customer is not found.
+     * @param customerUuid the unique identifier of the customer whose orders are to be retrieved
+     * @return a list of {@link OrderReadOnlyDTO} objects representing the orders associated with the customer
+     * @throws AppServerException if a server-related error occurs during the operation
+     * @throws AppObjectNotFoundException if the customer with the specified UUID is not found
      */
     @Override
-    public Set<OrderReadOnlyDTO> getAllOrders(String customerUuid) throws AppServerException, AppObjectNotFoundException {
+    public List<OrderReadOnlyDTO> getAllOrders(String customerUuid) throws AppServerException, AppObjectNotFoundException {
         Customer customer = customerRepository.findByUuid(customerUuid)
                 .orElseThrow(() -> new AppObjectNotFoundException("Customer", "Customer with Uuid: " + customerUuid + " not found"));
         LOGGER.info("Customer  {} was found", customer);
 
 
-        Set<Order> orders = customer.getOrders();
-        List<Order> sortedOrders = new ArrayList<>(orders);
-        sortedOrders.sort(Comparator.comparing(Order::getCreatedAt));
-        return sortedOrders.stream()
-                .map(order -> {
-                    OrderReadOnlyDTO dto = mapper.mapToReadOnlyOrder(order);
-                    dto.setCreatedDate(order.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                    return dto;
-                })
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-
+        CustomerReadOnlyDTO customerDto = mapper.mapToCustomerReadOnlyDTO(customer);
+        List<OrderReadOnlyDTO> orderReadOnlyDTOS = customerDto.getOrdersReadOnlyDTOs();
+        return orderReadOnlyDTOS;
     }
 
 /**

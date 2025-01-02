@@ -2,6 +2,7 @@ package gr.eshop.marios.EshopApp.dto;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -19,6 +20,6 @@ public class CustomerReadOnlyDTO {
     private UserReadOnlyDTO userReadOnlyDTO;
     private CustomerInfoReadOnlyDTO customerInfoReadOnlyDTO;
     private PaymentInfoReadOnlyDTO paymentInfoReadOnlyDTO;
-    private Set<OrderReadOnlyDTO> ordersReadOnlyDTOs;
+    private List<OrderReadOnlyDTO> ordersReadOnlyDTOs;
 
 }

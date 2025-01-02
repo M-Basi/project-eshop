@@ -14,5 +14,5 @@ import java.util.Set;
 public interface IOrderService {
     OrderReadOnlyDTO saveOrderToCustomer(OrderInsertDTO dto ) throws AppObjectNotFoundException, AppServerException, AppObjectAlreadyExists, AppObjectInvalidArgumentException, IOException;
 
-    Set<OrderReadOnlyDTO> getAllOrders(String customerUuid) throws AppServerException, AppObjectNotFoundException;
+    List<OrderReadOnlyDTO> getAllOrders(String customerUuid) throws AppServerException, AppObjectNotFoundException;
 }
