@@ -30,6 +30,13 @@ public class AuthenticationService {
     private final AdminUserRepository adminUserRepository;
 
 
+    /**
+     * Authenticates a user based on the provided credentials and generates a JWT token.
+     *
+     * @param dto the AuthenticationRequestDTO containing the username and password
+     * @return an AuthenticationResponseDTO containing the user's first name, UUID, and JWT token
+     * @throws AppObjectNotAuthorizedException if the user is not authorized or does not exist
+     */
     public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO dto)
             throws AppObjectNotAuthorizedException {
 

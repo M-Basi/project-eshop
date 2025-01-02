@@ -21,6 +21,16 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomAuthenticationEntryPoint.class);
+
+    /**
+     * Handles authentication entry point by determining the response when an unauthenticated user accesses a secured endpoint.
+     *
+     * @param request the HttpServletRequest that resulted in the authentication exception
+     * @param response the HttpServletResponse to be customized
+     * @param authException the exception that was thrown when authentication failed
+     * @throws IOException if an input or output exception occurs
+     * @throws ServletException if a servlet exception occurs
+     */
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,

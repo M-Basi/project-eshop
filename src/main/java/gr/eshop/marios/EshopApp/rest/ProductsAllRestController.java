@@ -71,8 +71,7 @@ public class ProductsAllRestController {
     )
     @PostMapping("/all")
     public ResponseEntity<Paginated<ProductReadOnlyDTO>> getProducts(
-            @Nullable @RequestBody ProductFilters filters)
-            throws AppObjectNotFoundException, AppObjectNotAuthorizedException {
+            @Nullable @RequestBody ProductFilters filters) {
         LOGGER.info("getProducts called");
         LOGGER.info("Filters: {}", filters);
 
@@ -107,8 +106,8 @@ public class ProductsAllRestController {
     @PostMapping("/product")
     public ResponseEntity<ProductReadOnlyDTO> getProductById(
             @Valid @RequestBody Long productId,
-            BindingResult bindingResult) throws AppObjectInvalidArgumentException,
-            AppObjectNotFoundException, ValidationException, AppObjectAlreadyExists, AppServerException {
+            BindingResult bindingResult) throws
+            AppObjectNotFoundException, ValidationException {
 
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
@@ -142,16 +141,4 @@ public class ProductsAllRestController {
 
     }
 
-    //    @PostMapping("/allPaginated")
-//    public ResponseEntity<Paginated<ProductReadOnlyDTO>> getProductsPaginatedFiltered(
-//            @Nullable @RequestBody ProductFilters filters)
-//            throws AppObjectNotFoundException, AppObjectNotAuthorizedException {
-//        try {
-//            if (filters == null) filters = ProductFilters.builder().build();
-//            return ResponseEntity.ok(productService.getProductFilteredPaginated(filters));
-//        } catch (Exception e) {
-//            LOGGER.error("ERROR: Could not get products.", e);
-//            throw e;
-//        }
-//    }
 }

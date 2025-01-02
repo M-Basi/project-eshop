@@ -9,6 +9,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
+
+    /**
+     * Configures the OpenAPI documentation with security settings for bearer token authentication.
+     *
+     * @return the configured OpenAPI instance
+     */
     @Bean
     public OpenAPI customOpenAPI() {
         final String securitySchemeName = "bearer ";

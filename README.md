@@ -67,7 +67,7 @@ To run this project, ensure you have the following installed:
    ./gradlew javadoc
    ```
    Javadoc files will created at file: "build/docs/javadoc/"
-   Open index.html file i any browser. At the moment only the services have completed javadoc explaination
+   Open index.html file in any browser.
 
 
 6. **Access Swagger:**

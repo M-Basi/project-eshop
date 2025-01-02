@@ -33,9 +33,14 @@ public class Mapper {
     private final CategoryRepository categoryRepository;
     private final RegionRepository regionRepository;
     private final ProductRepository productRepository;
-    private final OrderItemRepository orderItemRepository;
-    private final AttachmentPhotoRepository attachmentPhotoRepository;
 
+
+    /**
+     * Maps a UserInsertDTO to a User entity.
+     *
+     * @param userInsertDTO the UserInsertDTO containing the user details
+     * @return the mapped User entity
+     */
     public User mapToUser(UserInsertDTO userInsertDTO) {
         User user = new User();
         user.setUsername(userInsertDTO.getUsername());
@@ -50,7 +55,12 @@ public class Mapper {
     }
 
 
-
+    /**
+     * Maps a User entity to a UserReadOnlyDTO.
+     *
+     * @param user the User entity to map
+     * @return the mapped UserReadOnlyDTO
+     */
     public UserReadOnlyDTO mapToUserReadOnlyDTO(User user) {
 
         return new UserReadOnlyDTO(user.getUuid(),user.getUsername(),user.getRole(),
@@ -58,7 +68,12 @@ public class Mapper {
     }
 
 
-
+    /**
+     * Maps a CustomerInsertDTO to a Customer entity.
+     *
+     * @param customerInsertDTO the CustomerInsertDTO containing customer details
+     * @return the mapped Customer entity
+     */
     public Customer mapToCustomer(CustomerInsertDTO customerInsertDTO) {
         Customer customer = new Customer();
         customer.setFirstname(customerInsertDTO.getFirstname());
@@ -72,7 +87,12 @@ public class Mapper {
     }
 
 
-
+    /**
+     * Maps a CustomerInfoInsertDTO to a CustomerInfo entity.
+     *
+     * @param customerInfoInsertDTO the CustomerInfoInsertDTO containing customer info details
+     * @return the mapped CustomerInfo entity
+     */
     public CustomerInfo mapToCustomerInfo(CustomerInfoInsertDTO customerInfoInsertDTO) {
 
         LOGGER.info("Mapping CustomerInfo for DTO: {}", customerInfoInsertDTO);
@@ -97,27 +117,12 @@ public class Mapper {
         return customerInfo;
     }
 
-//    public CustomerInfo mapToUpdateCustomerInfo(CustomerInfoUpdateDTO customerInfoUpdateDTO) {
-//        CustomerInfo customerInfo = new CustomerInfo();
-//        customerInfo.setId(customerInfoUpdateDTO.getId());
-//        customerInfo.setPhoneNumber(customerInfoUpdateDTO.getPhoneNumber());
-//        customerInfo.setCity(customerInfoUpdateDTO.getCity());
-//        customerInfo.setCountry(customerInfoUpdateDTO.getCountry());
-//        Region region= regionRepository.findByName(customerInfoUpdateDTO.getRegion())
-//                .orElseThrow(() -> new RuntimeException("Region with name: "
-//                        + customerInfoUpdateDTO.getRegion() + " not found"));
-//        customerInfo.setRegion(region);
-//        customerInfo.setZipCode(customerInfoUpdateDTO.getZipCode());
-//        customerInfo.setStreetNumber(customerInfoUpdateDTO.getStreetNumber());
-//        customerInfo.setStreet(customerInfoUpdateDTO.getStreet());
-//
-//        Customer customer = customerRepository.findByUuid(customerInfoUpdateDTO.getCustomerUuid())
-//                .orElseThrow(() -> new RuntimeException("User with Uuid: " + customerInfoUpdateDTO.getCustomerUuid() + " not found"));
-//
-//        customerInfo.setCustomer(customer);
-//        return customerInfo;
-//    }
-
+    /**
+     * Maps a CustomerInfo entity to a CustomerInfoReadOnlyDTO.
+     *
+     * @param customerInfo the CustomerInfo entity to map
+     * @return the mapped CustomerInfoReadOnlyDTO
+     */
     public CustomerInfoReadOnlyDTO mapToCustomerInfoReadOnlyDTO(CustomerInfo customerInfo) {
         CustomerInfoReadOnlyDTO customerInfoReadOnlyDTO = new CustomerInfoReadOnlyDTO();
         customerInfoReadOnlyDTO.setId(customerInfo.getId());
@@ -132,7 +137,12 @@ public class Mapper {
         return customerInfoReadOnlyDTO;
     }
 
-
+    /**
+     * Maps a PaymentInfoInsertDTO to a PaymentInfo entity.
+     *
+     * @param paymentInfoInsertDTO the PaymentInfoInsertDTO containing payment info details
+     * @return the mapped PaymentInfo entity
+     */
     public PaymentInfo mapToPaymentInfo(PaymentInfoInsertDTO paymentInfoInsertDTO) {
         PaymentInfo paymentInfo = new PaymentInfo();
         paymentInfo.setCard(paymentInfoInsertDTO.getCard());
@@ -151,21 +161,12 @@ public class Mapper {
         return paymentInfo;
     }
 
-//    public PaymentInfo mapToUpdatePaymentInfo(PaymentInfoUpdateDTO paymentInfoUpdateDTO) {
-//        PaymentInfo paymentInfo = new PaymentInfo();
-//        paymentInfo.setId(paymentInfoUpdateDTO.getId());
-//        paymentInfo.setCard(paymentInfoUpdateDTO.getCard());
-//        paymentInfo.setExpiredDate(paymentInfoUpdateDTO.getExpiredDate());
-//        paymentInfo.setCardName(paymentInfoUpdateDTO.getCardName());
-//
-//        Customer customer = customerRepository.findByUuid(paymentInfoUpdateDTO.getCustomerUuid())
-//                .orElseThrow(() -> new RuntimeException("User with Uuid: " +
-//                        paymentInfoUpdateDTO.getCustomerUuid() + " not found"));
-//        paymentInfo.setCustomer(customer);
-//
-//        return paymentInfo;
-//    }
-
+    /**
+     * Maps a PaymentInfo entity to a PaymentInfoReadOnlyDTO.
+     *
+     * @param paymentInfo the PaymentInfo entity to map
+     * @return the mapped PaymentInfoReadOnlyDTO
+     */
     public PaymentInfoReadOnlyDTO mapToPaymentInfoReadOnlyDTO(PaymentInfo paymentInfo) {
         var dto = new PaymentInfoReadOnlyDTO();
         dto.setId(paymentInfo.getId());
@@ -176,9 +177,14 @@ public class Mapper {
         return dto;
     }
 
+    /**
+     * Maps a Customer entity to a CustomerReadOnlyDTO.
+     *
+     * @param customer the Customer entity to map
+     * @return the mapped CustomerReadOnlyDTO
+     */
     public CustomerReadOnlyDTO mapToCustomerReadOnlyDTO(Customer customer) {
         CustomerReadOnlyDTO customerReadOnlyDTO = new CustomerReadOnlyDTO();
-//        customerReadOnlyDTO.setId(customer.getId());
         customerReadOnlyDTO.setUuid(customer.getUuid());
         customerReadOnlyDTO.setFirstname(customer.getFirstname());
         customerReadOnlyDTO.setLastname(customer.getLastname());
@@ -198,14 +204,25 @@ public class Mapper {
         return customerReadOnlyDTO;
     }
 
-    
 
+    /**
+     * Maps a set of Order entities to a set of OrderReadOnlyDTOs.
+     *
+     * @param orders the set of Order entities to map
+     * @return the mapped set of OrderReadOnlyDTOs
+     */
     public Set<OrderReadOnlyDTO> mapOrdersToReadOnlyDTO(Set<Order> orders) {
         return orders.stream()
                 .map(this::mapToReadOnlyOrder)
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Maps an Order entity to an OrderReadOnlyDTO.
+     *
+     * @param order the Order entity to map
+     * @return the mapped OrderReadOnlyDTO
+     */
     public OrderReadOnlyDTO mapToReadOnlyOrder(Order order) {
         var dto = new OrderReadOnlyDTO();
         dto.setId(order.getId());
@@ -220,13 +237,24 @@ public class Mapper {
 
     }
 
-
+    /**
+     * Maps a set of OrderItem entities to a set of OrderItemReadOnlyDTOs.
+     *
+     * @param orderItems the set of OrderItem entities to map
+     * @return the mapped set of OrderItemReadOnlyDTOs
+     */
     public Set<OrderItemReadOnlyDTO> mapOrderItemsToReadOnlyDTO(Set<OrderItem> orderItems) {
         return orderItems.stream()
                 .map(this::mapToReadOnlyOrderItem)
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Maps an OrderItem entity to an OrderItemReadOnlyDTO.
+     *
+     * @param orderItem the OrderItem entity to map
+     * @return the mapped OrderItemReadOnlyDTO
+     */
     public OrderItemReadOnlyDTO mapToReadOnlyOrderItem(OrderItem orderItem) {
         var dto = new OrderItemReadOnlyDTO();
         dto.setId(orderItem.getId());
@@ -246,6 +274,12 @@ public class Mapper {
 
 
 
+    /**
+     * Maps an OrderInsertDTO to an Order entity.
+     *
+     * @param orderInsertDTO the OrderInsertDTO containing order details
+     * @return the mapped Order entity
+     */
     public Order mapToOrder(OrderInsertDTO orderInsertDTO) {
         OrderReadOnlyDTO orderReadOnlyDTO = new OrderReadOnlyDTO();
         var order = new Order();
@@ -266,35 +300,19 @@ public class Mapper {
 
 
         return order;
-//        for (OrderItem item : orderInsertDTO.getOrderItems()) {
-//            OrderItem orderItem = new OrderItem();
-//            orderItem.setSku(item.getSku());
-//            orderItem.setName(item.getName());
-//            Category category = categoryRepository.findById(item.productInsertDTO.getCategoryNumber())
-//                    .orElseThrow(() -> new RuntimeException("Category with id : " + productInsertDTO.getCategoryNumber() + " not found"));
-//            LOGGER.info("Category: {}",category);
-//            Brand brand = brandRepository.findById(productInsertDTO.getBrandNumber())
-//                    .orElseThrow(() -> new RuntimeException("Brand with id: " + productInsertDTO.getBrandNumber() + " not found"));
-//            orderItem.setBrand(item.getBrand());
-//            orderItem.setCategory(item.getCategory());
-//            orderItem.setQuantity(item.getQuantity());
-//            orderItem.setUnitPrice(item.getUnitPrice());
-//            AttachmentPhoto attachmentPhoto = attachmentPhotoRepository.findById(item.getAttachmentPhoto().getId()).orElse(null);
-//            orderItem.setAttachmentPhoto(attachmentPhoto);
-//            orderItem.setTotalPrice(item.getTotalPrice());
-//            orderItem.setOrder(order);
-//            order.addOrderedItem(item);
-//
-//        }
-
-
     }
 
+    /**
+     * Maps an OrderItemInsertDTO to an OrderItem entity.
+     *
+     * @param orderItemInsertDTO the OrderItemInsertDTO containing order item details
+     * @return the mapped OrderItem entity
+     */
     public OrderItem mapToOrderItem(OrderItemInsertDTO orderItemInsertDTO) {
         OrderItem orderItem = new OrderItem();
 
         Product product = productRepository.findBySku(orderItemInsertDTO.getSku())
-                        .orElseThrow(() -> new RuntimeException("Product with Sku: " + orderItemInsertDTO.getSku() + " not found"));
+                .orElseThrow(() -> new RuntimeException("Product with Sku: " + orderItemInsertDTO.getSku() + " not found"));
         orderItem.setName(product.getName());
         orderItem.setUnitPrice(product.getPrice());
         orderItem.setQuantity(orderItemInsertDTO.getQuantity());
@@ -313,14 +331,24 @@ public class Mapper {
 
     }
 
+    /**
+     * Maps a list of OrderItemInsertDTOs to a set of OrderItem entities.
+     *
+     * @param orderItemInsertDTOs the list of OrderItemInsertDTOs
+     * @return the mapped set of OrderItem entities
+     */
     public Set<OrderItem> mapOrderItemsTo(List<OrderItemInsertDTO> orderItemInsertDTOs) {
         return orderItemInsertDTOs.stream()
                 .map(this::mapToOrderItem)
                 .collect(Collectors.toSet());
     }
 
-
-
+    /**
+     * Maps an AttachmentPhoto to an AttachmentReadOnlyDTO.
+     *
+     * @param attachmentPhoto the AttachmentPhoto to map
+     * @return the mapped AttachmentReadOnlyDTO
+     */
     public AttachmentReadOnlyDTO mapAttachmentToReadOnlyDTO(AttachmentPhoto attachmentPhoto) {
         var attachment = new AttachmentReadOnlyDTO();
         attachment.setFilename(attachmentPhoto.getFilename());
@@ -332,11 +360,12 @@ public class Mapper {
         return attachment;
     }
 
-
-
-
-
-
+    /**
+     * Maps an AdminUserInsertDTO to an AdminUser entity.
+     *
+     * @param adminUserInsertDTO the AdminUserInsertDTO containing admin user details
+     * @return the mapped AdminUser entity
+     */
     public AdminUser mapToAdmin(AdminUserInsertDTO adminUserInsertDTO) {
         AdminUser admin = new AdminUser();
         admin.setFirstname(adminUserInsertDTO.getFirstname());
@@ -349,6 +378,12 @@ public class Mapper {
         return admin;
     }
 
+    /**
+     * Maps an AdminUserUpdateDTO to an AdminUser entity for updating purposes.
+     *
+     * @param adminUserUpdateDTO the AdminUserUpdateDTO containing admin user details
+     * @return the updated AdminUser entity
+     */
     public AdminUser mapToUpdateAdmin(AdminUserUpdateDTO adminUserUpdateDTO) {
         AdminUser admin = new AdminUser();
         admin.setId(adminUserUpdateDTO.getId());
@@ -362,11 +397,22 @@ public class Mapper {
         return admin;
     }
 
+    /**
+     * Maps an AdminUser entity to an AdminUserReadOnlyDTO.
+     *
+     * @param admin the AdminUser entity to map
+     * @return the mapped AdminUserReadOnlyDTO
+     */
     public AdminUserReadOnlyDTO mapAdminToReadOnlyDTO(AdminUser admin) {
         return new AdminUserReadOnlyDTO(admin.getId(),admin.getFirstname(), admin.getFirstname(), admin.getUuid());
     }
 
-
+    /**
+     * Maps a ProductInsertDTO to a Product entity.
+     *
+     * @param productInsertDTO the ProductInsertDTO containing product details
+     * @return the mapped Product entity
+     */
     public Product mapToProduct(ProductInsertDTO productInsertDTO) {
         Product product = new Product();
         LOGGER.info("Product: " + productInsertDTO);
@@ -392,6 +438,12 @@ public class Mapper {
 
     }
 
+    /**
+     * Maps a ProductUpdateDTO to a Product entity for updating purposes.
+     *
+     * @param productUpdateDTO the ProductUpdateDTO containing product details
+     * @return the updated Product entity
+     */
     public Product mapToUpdateProduct(ProductUpdateDTO productUpdateDTO) {
         Product product = new Product();
         LOGGER.info("{}", productUpdateDTO);
@@ -417,6 +469,12 @@ public class Mapper {
 
     }
 
+    /**
+     * Maps a Product entity to a ProductReadOnlyDTO.
+     *
+     * @param product the Product entity to map
+     * @return the mapped ProductReadOnlyDTO
+     */
     public ProductReadOnlyDTO mapToProductReadOnlyDTO(Product product) {
         ProductReadOnlyDTO productReadOnlyDTO = new ProductReadOnlyDTO();
         productReadOnlyDTO.setId(product.getId());
@@ -438,13 +496,26 @@ public class Mapper {
 
     }
 
+    /**
+     * Maps a Brand entity to a BrandReadOnlyDTO.
+     *
+     * @param brand the Brand entity to map
+     * @return the mapped BrandReadOnlyDTO
+     */
     public BrandReadOnlyDTO mapBrandToReadOnlyDTO(Brand brand) {
         return new BrandReadOnlyDTO(brand.getId(), brand.getBrandName());
     }
 
+    /**
+     * Maps a Category entity to a CategoryReadOnlyDTO.
+     *
+     * @param category the Category entity to map
+     * @return the mapped CategoryReadOnlyDTO
+     */
     public CategoryReadOnlyDTO mapCategoryReadOnlyDTO(Category category) {
         return new CategoryReadOnlyDTO(category.getId(), category.getCategoryName());
     }
+
 
 }
 

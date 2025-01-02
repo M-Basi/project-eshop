@@ -38,13 +38,18 @@ public class SecurityConfiguration {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthFilter;
 
+    /**
+     * Configures the security filter chain for HTTP requests.
+     *
+     * @param http the HttpSecurity object to configure
+     * @return the configured SecurityFilterChain
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-//                .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(myCustomAuthenticationEntryPoint()))
-//                .exceptionHandling(exceptions -> exceptions.accessDeniedHandler(myCustomAccessDeniedHandler()))
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(myCustomAuthenticationEntryPoint())
                         .accessDeniedHandler(myCustomAccessDeniedHandler())
@@ -85,6 +90,11 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+    /**
+     * Configures CORS for the application.
+     *
+     * @return the CorsConfigurationSource containing the configured CORS settings
+     */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
@@ -105,7 +115,11 @@ public class SecurityConfiguration {
 
     }
 
-
+    /**
+     * Configures the authentication provider with user details service and password encoder.
+     *
+     * @return the configured AuthenticationProvider
+     */
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
@@ -113,6 +127,11 @@ public class SecurityConfiguration {
         return authProvider;
     }
 
+    /**
+     * Configures the password encoder for the application.
+     *
+     * @return the configured PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
 
@@ -120,18 +139,34 @@ public class SecurityConfiguration {
     }
 
 
-
+    /**
+     * Configures the authentication manager for the application.
+     *
+     * @param config the AuthenticationConfiguration
+     * @return the configured AuthenticationManager
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
             throws Exception{
         return config.getAuthenticationManager();
     }
 
+    /**
+     * Provides a custom authentication entry point for handling unauthorized access.
+     *
+     * @return the custom AuthenticationEntryPoint
+     */
     @Bean
     public AuthenticationEntryPoint myCustomAuthenticationEntryPoint() {
         return new CustomAuthenticationEntryPoint();
     }
 
+    /**
+     * Provides a custom access denied handler for handling forbidden access.
+     *
+     * @return the custom AccessDeniedHandler
+     */
     @Bean
     public AccessDeniedHandler myCustomAccessDeniedHandler() {
         return new CustomAccessDeniedHandler();

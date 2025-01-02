@@ -111,7 +111,7 @@ public class OrderRestController {
     @PostMapping("/order")
     public ResponseEntity<OrderReadOnlyDTO> getOrder(
             @Valid @RequestBody IdRequestDTO dto,
-            BindingResult bindingResult) throws AppObjectInvalidArgumentException, AppObjectNotFoundException, ValidationException,
+            BindingResult bindingResult) throws AppObjectNotFoundException, ValidationException,
             AppObjectAlreadyExists, AppServerException {
 
         if (bindingResult.hasErrors()) {

@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentInfoRestController {
 
     private final CustomerServiceImpl customerService;
-    //    private final OrderServiceImpl orderService;
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentInfoRestController.class);
 
 
@@ -125,7 +124,7 @@ public class PaymentInfoRestController {
     @PostMapping("/getByCustomer")
     public ResponseEntity<PaymentInfoReadOnlyDTO> getPaymentInfoByCustomer(
             @Valid @RequestBody UuidRequestDTO dto,
-            BindingResult bindingResult) throws AppObjectInvalidArgumentException, AppObjectNotFoundException, ValidationException, AppObjectAlreadyExists, AppServerException {
+            BindingResult bindingResult) throws AppObjectNotFoundException, ValidationException {
 
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
@@ -151,7 +150,7 @@ public class PaymentInfoRestController {
     @PostMapping("/delete")
     public ResponseEntity<PaymentInfoReadOnlyDTO> delete(
             @Valid @RequestBody IdRequestDTO dto,
-            BindingResult bindingResult) throws AppObjectInvalidArgumentException, AppObjectNotFoundException, ValidationException, AppObjectAlreadyExists, AppServerException {
+            BindingResult bindingResult) throws AppObjectNotFoundException, ValidationException, AppServerException {
 
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);

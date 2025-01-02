@@ -30,12 +30,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
 
 
+    /**
+     * Determines if a request should bypass JWT filtering.
+     *
+     * @param request the HttpServletRequest to evaluate
+     * @return true if the request should bypass filtering, false otherwise
+     * @throws ServletException if an exception occurs during filtering
+     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
         return path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs");
     }
 
+    /**
+     * Applies internal JWT filtering for incoming HTTP requests.
+     *
+     * @param request the HttpServletRequest to process
+     * @param response the HttpServletResponse to populate
+     * @param filterChain the FilterChain to pass the request and response to the next filter
+     * @throws ServletException if an error occurs during filtering
+     * @throws IOException if an input or output exception occurs
+     */
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,

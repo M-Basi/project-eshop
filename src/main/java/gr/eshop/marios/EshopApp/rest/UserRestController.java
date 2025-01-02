@@ -131,7 +131,7 @@ public class UserRestController {
     @PostMapping("/user/update")
     public ResponseEntity<UserReadOnlyDTO> updateUser(
             @Valid @RequestBody UserUpdateDTO userUpdateDTO,
-            BindingResult bindingResult) throws AppObjectInvalidArgumentException, AppObjectNotFoundException, ValidationException, AppObjectAlreadyExists, AppServerException {
+            BindingResult bindingResult) throws AppObjectNotFoundException, ValidationException, AppServerException {
 
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);

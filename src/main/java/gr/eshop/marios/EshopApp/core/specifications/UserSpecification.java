@@ -9,6 +9,12 @@ public class UserSpecification {
 
     }
 
+    /**
+     * Creates a specification to filter users by active status.
+     *
+     * @param isActive the active status of the user
+     * @return a specification for filtering users
+     */
     public static Specification<User> trUsersIsActive(Boolean isActive) {
         return ((root, query, criteriaBuilder) -> {
             if (isActive == null) {
@@ -20,6 +26,13 @@ public class UserSpecification {
         });
     }
 
+    /**
+     * Creates a specification to perform a case-insensitive search on a string field of the user.
+     *
+     * @param field the name of the field to search
+     * @param value the value to search for
+     * @return a specification for filtering users
+     */
     public static Specification<User> trStringFieldLike(String field, String value) {
         return ((root, query, criteriaBuilder) -> {
             if (value == null || value.trim().isEmpty()) {

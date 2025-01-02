@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.Validation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerRestController {
 
     private final CustomerServiceImpl customerService;
-//    private final OrderServiceImpl orderService;
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerRestController.class);
     private final OrderRepository orderRepository;
 
@@ -69,8 +69,7 @@ public class CustomerRestController {
     )
     @PostMapping("/allPaginated")
     public ResponseEntity<Paginated<CustomerReadOnlyDTO>> getCustomerPaginatedFiltered(
-            @Nullable @RequestBody CustomerFilters filters)
-            throws AppObjectNotFoundException, AppObjectNotAuthorizedException {
+            @Nullable @RequestBody CustomerFilters filters) {
         try {
             if (filters == null) filters = CustomerFilters.builder().build();
             return ResponseEntity.ok(customerService.getCustomersFilteredPaginated(filters));
@@ -96,7 +95,7 @@ public class CustomerRestController {
     @PostMapping("/customer/save")
     public ResponseEntity<CustomerReadOnlyDTO> saveCustomer(
             @Valid @RequestBody CustomerInsertDTO customerInsertDTO,
-            BindingResult bindingResult) throws Exception {
+            BindingResult bindingResult) throws AppObjectNotFoundException, ValidationException, AppServerException, AppObjectInvalidArgumentException, AppObjectAlreadyExists {
 
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
@@ -124,7 +123,7 @@ public class CustomerRestController {
     @PostMapping("/customer/update")
     public ResponseEntity<CustomerReadOnlyDTO> updateCustomer(
             @Valid @RequestBody CustomerUpdateDTO customerUpdateDTO,
-            BindingResult bindingResult) throws Exception {
+            BindingResult bindingResult) throws ValidationException, AppObjectNotFoundException, AppServerException {
 
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
@@ -150,7 +149,7 @@ public class CustomerRestController {
     @PostMapping("/customer/delete")
     public ResponseEntity<CustomerReadOnlyDTO> deleteCustomer(
             @Valid @RequestBody UuidRequestDTO dto,
-            BindingResult bindingResult) throws Exception {
+            BindingResult bindingResult) throws ValidationException, AppObjectNotFoundException, AppServerException {
 
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
@@ -177,7 +176,7 @@ public class CustomerRestController {
     @PostMapping("/customer/userUuid")
     public ResponseEntity<CustomerReadOnlyDTO> getCustomerByUserUuid(
             @Valid @RequestBody UuidRequestDTO dto,
-            BindingResult bindingResult) throws Exception {
+            BindingResult bindingResult) throws ValidationException, AppObjectNotFoundException {
 
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
@@ -205,7 +204,7 @@ public class CustomerRestController {
     @PostMapping("/customer/customer")
     public ResponseEntity<CustomerReadOnlyDTO> getCustomerByUuid(
             @Valid @RequestBody UuidRequestDTO dto,
-            BindingResult bindingResult) throws Exception {
+            BindingResult bindingResult) throws ValidationException, AppObjectNotFoundException {
 
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
