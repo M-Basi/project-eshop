@@ -458,10 +458,11 @@ public class Mapper {
                 .orElseThrow(() -> new RuntimeException("Brand with name : " + productUpdateDTO.getBrandName() + " not found"));
         product.setBrand(brand);
         product.setCategory(category);
-        product.setInStock(product.getInStock());
+        product.setQuantity(productUpdateDTO.getQuantity());
+        product.setInStock(product.isInStock());
         product.setDescription(productUpdateDTO.getDescription());
         product.setPrice(productUpdateDTO.getPrice());
-        product.setQuantity(productUpdateDTO.getQuantity());
+
         product.setSku(productUpdateDTO.getSku());
         product.setIsActive((productUpdateDTO.getIsActive() != null ? productUpdateDTO.getIsActive() : true ));
 

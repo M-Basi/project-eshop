@@ -98,6 +98,7 @@ public class OrderServiceImpl implements IOrderService {
             Product product = productRepository.findBySku(item.getSku()).
                     orElseThrow(() -> new AppObjectNotFoundException("Product","Product not found with Sku: " + item.getSku()));
             product.setQuantity(product.getQuantity() - item.getQuantity());
+            product.setInStock(product.isInStock());
             if (product.getQuantity() < 0) {
                 throw new AppObjectInvalidArgumentException("Product", "Product stock cannot be negative for SKU: " + item.getSku());
             }
